@@ -11,18 +11,58 @@ namespace WebApplication8.Controllers
         {
             _context= context;
         }
+
+        #region UserManagment
         [HttpGet]
-        public IActionResult AddUser()
+        public IActionResult AddUpdateUser(int? id)
         {
-            return View();
+            User user = id.HasValue ? _context.Users.Find(id) : new();
+            return View("AddUser",user);
         }
 
         [HttpPost]
-        public IActionResult AddUser(User user)
+        public IActionResult AddUpdateUser(User user)
         {
-            _context.Users.Add(user);
+            bool checkIdCardExists
+                = _context.Users.Any(p => p.IDNumber == user.IDNumber && p.Id !=user.Id);
+            if(checkIdCardExists)
+            {
+                ViewBag.Error = "Id Number exists";
+                return View("AddUser",user);
+            }
+            if(user.Id == 0)
+            {
+              _context.Users.Add(user);
+            }
+            else
+            {
+                var userEntity = _context.Users.Find(user.Id);
+                userEntity.FirstName = user.FirstName;
+                userEntity.LastName = user.LastName;
+                userEntity.Email = user.Email;
+                userEntity.IDNumber = user.IDNumber;
+            }
             _context.SaveChanges();
-            return View();
+            return RedirectToAction("UserIndex");
         }
+
+        public IActionResult DeleteUser(int id)
+        {
+            var userEntity = _context.Users.Find(id);
+            _context.Users.Remove(userEntity);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UserIndex));
+        }
+        public IActionResult UserIndex()
+        {
+            var users = _context.Users.ToList();
+            
+            return View(users);
+        }
+
+       
+
+        
+        #endregion
     }
 }

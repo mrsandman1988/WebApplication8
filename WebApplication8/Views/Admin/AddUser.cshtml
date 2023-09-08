@@ -12,22 +12,34 @@
     <title>AddUser</title>
 </head>
 <body>
+    @if(ViewBag.Error !=null)
+    {
+        <span>@ViewBag.Error</span>
+    }
     <form method="post">
-        <div>
-            <input asp-for="FirstName" />
+        <input type="hidden" asp-for="Id" />
+        <div> 
             <label asp-for="FirstName">First Name</label>
+            <input asp-for="FirstName" />
+           
         </div>
-         <div>
+         <div> 
+             <label asp-for="LastName"> Last Name</label>
             <input asp-for="LastName" />
-            <label asp-for="LastName"> Last Name</label>
+           
         </div>
+          <div> 
+             <label asp-for="IDNumber"> Id Number</label>
+            <input asp-for="IDNumber" />
 
-         <div>
+        </div>
+         <div> 
+             <label asp-for="Email">Email</label>
             <input asp-for="Email" />
-            <label asp-for="Email">Email</label>
+           
         </div>
         <div>
-            <button type="submit">Save</button>
+            <button type="submit">@(Model.Id == 0?"Add":"Update")</button>
         </div>
     </form>
 </body>
