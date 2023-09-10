@@ -1,0 +1,21 @@
+﻿@using WebApplication8.ViewModels
+@model UserFilterModel
+<form method="get">
+        <label>
+            First Name
+        <input asp-for="FirstName" />
+        </label>
+         <label>
+           Last Name
+        <input asp-for="LastName" />
+        </label>
+        <label>
+           Email
+        <input asp-for="Email"/>
+        </label>
+         <label>
+            Id Number
+        <input asp-for="IdNumber" />
+        </label>
+        <button type="submit">Filter</button>
+    </form>

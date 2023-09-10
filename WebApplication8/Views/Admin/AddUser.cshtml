@@ -1,5 +1,6 @@
-﻿@using WebApplication8.Data.Entities
-@model User
+﻿@using WebApplication8.ViewModels
+@using WebApplication8.Enums
+@model UserAddEditViewModel
 @{
     Layout = null;
 }
@@ -37,6 +38,22 @@
              <label asp-for="Email">Email</label>
             <input asp-for="Email" />
            
+        </div>
+        <div>
+            <label asp-for="CityId">City</label>
+            <select asp-for="CityId">
+                <option>Please select city</option>
+                @*@foreach(City city in ViewBag.Cities)
+                {
+                    <option value="@city.Id">@city.Name</option>
+                }*@
+            </select>
+        </div>
+        <div>
+            <label asp-for="RoleType">Role</label>
+            <select asp-for="RoleType" asp-items="Html.GetEnumSelectList<RoleType>()">
+                <option>Please select role</option>
+            </select>
         </div>
         <div>
             <button type="submit">@(Model.Id == 0?"Add":"Update")</button>

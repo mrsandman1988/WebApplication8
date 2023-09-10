@@ -1,63 +1,78 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication8.Data;
 using WebApplication8.Data.Entities;
+using WebApplication8.ViewModels;
+using WebApplication8.Data.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using WebApplication8.Services.Interfaces;
 
 namespace WebApplication8.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly MyShopDataContext _context;
-        public AdminController(MyShopDataContext context)
+        private readonly IUserService _userService;
+        public AdminController(IUserService userService)
         {
-            _context= context;
+            _userService= userService;
         }
 
         #region UserManagment
         [HttpGet]
         public IActionResult AddUpdateUser(int? id)
         {
-            User user = id.HasValue ? _context.Users.Find(id) : new();
-            return View("AddUser",user);
+            return View("AddUser", new UserAddEditViewModel());
+            //User user = id.HasValue ? _userRepository.GetById(id.Value) : new();
+            //ViewBag.Cities = _context.Cities.ToList() ;
+            //return View("AddUser",user);
         }
 
         [HttpPost]
-        public IActionResult AddUpdateUser(User user)
+        public IActionResult AddUpdateUser(UserAddEditViewModel model)
         {
-            bool checkIdCardExists
-                = _context.Users.Any(p => p.IDNumber == user.IDNumber && p.Id !=user.Id);
-            if(checkIdCardExists)
+            try
             {
-                ViewBag.Error = "Id Number exists";
-                return View("AddUser",user);
+                if(model.Id== 0)
+                {
+                    _userService.Add(model);
+                }
+                else
+                {
+                    _userService.Update(model);
+                }
             }
-            if(user.Id == 0)
+            catch(Exception ex)
             {
-              _context.Users.Add(user);
+                   ViewBag.Error = ex.Message;
+                    return View("AddUser",model);
             }
-            else
-            {
-                var userEntity = _context.Users.Find(user.Id);
-                userEntity.FirstName = user.FirstName;
-                userEntity.LastName = user.LastName;
-                userEntity.Email = user.Email;
-                userEntity.IDNumber = user.IDNumber;
-            }
-            _context.SaveChanges();
+            
+           
+            
+           
             return RedirectToAction("UserIndex");
         }
 
         public IActionResult DeleteUser(int id)
         {
-            var userEntity = _context.Users.Find(id);
-            _context.Users.Remove(userEntity);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(UserIndex));
+            return View();
+            //var userEntity = _userRepository.GetById(id);
+            //_userRepository.Delete(userEntity);
+           
+            //return RedirectToAction(nameof(UserIndex));
         }
-        public IActionResult UserIndex()
+        public IActionResult UserIndex(UserFilterModel model)
         {
-            var users = _context.Users.ToList();
-            
-            return View(users);
+            //ViewBag.Filter = model;
+            //var users = _userRepository.GetAll()
+            //    .Where(u => (model.FirstName == null || u.FirstName.ToLower() == model.FirstName.ToLower()
+            //    && (model.LastName == null || u.LastName.ToLower() == model.LastName.ToLower())
+            //    &&(model.Email == null || u.Email.ToLower() == model.Email.ToLower())
+            //    && (model.IdNumber == null || u.IDNumber.ToLower() == model.IdNumber.ToLower())))
+            //    .ToList();
+            //    ;
+
+            //return View(users);
+            return View(new List<User>());
         }
 
        

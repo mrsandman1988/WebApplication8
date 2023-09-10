@@ -1,6 +1,10 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using WebApplication8.Data.Repositories.Interfaces;
+using WebApplication8.Data.Repositories;
 using WebApplication8.Data;
+using WebApplication8.Services.Interfaces;
+using WebApplication8.Services;
 
 namespace WebApplication8
 {
@@ -14,6 +18,9 @@ namespace WebApplication8
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<MyShopDataContext>
                 (opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("MyShopDB")));
+
+            builder.Services.AddScoped<IUserRespository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,7 +40,7 @@ namespace WebApplication8
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Admin}/{action=UserIndex}/{id?}");
 
             app.Run();
         }

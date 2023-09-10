@@ -1,4 +1,5 @@
 ﻿@using WebApplication8.Data.Entities
+@using WebApplication8.ViewModels
 @model List<User>
 @{
     Layout = null;
@@ -14,6 +15,9 @@
 </head>
 <body>
     <h1>User list</h1>
+    <a asp-action="AddUpdateUser">Add new user</a>
+
+   <partial name="_UserFilter" model ="(UserFilterModel)ViewBag.Filter" />
     @if(Model.Count > 0)
     {
          <table border="1">

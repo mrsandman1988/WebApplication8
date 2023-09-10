@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication8.Data;
 
@@ -11,9 +12,11 @@ using WebApplication8.Data;
 namespace WebApplication8.Migrations
 {
     [DbContext(typeof(MyShopDataContext))]
-    partial class MyShopDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230910134817_AddCity")]
+    partial class AddCity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,6 +156,7 @@ namespace WebApplication8.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CityId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -169,9 +173,6 @@ namespace WebApplication8.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte?>("RoleType")
-                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -242,7 +243,9 @@ namespace WebApplication8.Migrations
                 {
                     b.HasOne("WebApplication8.Data.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
                 });
